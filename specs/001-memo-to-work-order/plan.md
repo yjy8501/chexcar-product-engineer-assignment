@@ -72,6 +72,7 @@ knowledge/
 └── extended/            # 가정을 더한 문서
 src/
 ├── config.py            # 경로, 모델 이름
+├── models.py            # Pydantic 모델(Draft, Item 등. data-model.md)
 ├── catalog.py           # 코드표 읽기
 ├── sentences.py         # 메모를 문장으로 나누기
 ├── knowledge.py         # 지식 문서 읽기
