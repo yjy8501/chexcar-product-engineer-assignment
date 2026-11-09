@@ -10,6 +10,7 @@
 | POST | `/api/map` | 메모 한 건을 새로 해석한다. 본문 `{inspection_id 또는 memo, knowledge}`. `claude` CLI가 필요하다. 응답은 Draft |
 | POST | `/api/orders` | 승인한다. 본문 `{inspection_id, knowledge, selections: [{item_id, choice, qty}]}`. `choice`는 코드 또는 `"skip"`. 추천이 없는 항목은 코드표의 아무 코드를 고를 수 있다(코드표 검사는 유지) |
 | GET | `/api/orders` | 저장된 확정 오더 목록 |
+| GET | `/api/summary` | 정답표 평가와 기본/보강 비교. 저장된 결과와 정답표만 읽는다 |
 
 ## POST /api/orders 응답
 

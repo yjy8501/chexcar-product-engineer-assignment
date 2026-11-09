@@ -2,49 +2,159 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "Draft",
   "type": "object",
-  "required": ["inspection_id", "memo", "sentences", "overall", "items", "excluded", "warnings", "meta"],
+  "required": [
+    "inspection_id",
+    "memo",
+    "sentences",
+    "overall",
+    "items",
+    "excluded",
+    "warnings",
+    "meta"
+  ],
   "properties": {
-    "inspection_id": {"type": "string"},
-    "memo": {"type": "string"},
+    "inspection_id": {
+      "type": "string"
+    },
+    "memo": {
+      "type": "string"
+    },
     "sentences": {
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["idx", "text", "role"],
+        "required": [
+          "idx",
+          "text",
+          "role"
+        ],
         "properties": {
-          "idx": {"type": "integer", "minimum": 0},
-          "text": {"type": "string"},
-          "role": {"enum": ["반영", "제외", "애매", "연결없음"]}
+          "idx": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "text": {
+            "type": "string"
+          },
+          "role": {
+            "enum": [
+              "반영",
+              "제외",
+              "애매",
+              "연결없음"
+            ]
+          }
         }
       }
     },
-    "overall": {"enum": ["정상", "작업없음", "판단불가"]},
+    "overall": {
+      "enum": [
+        "정상",
+        "작업없음",
+        "판단불가"
+      ]
+    },
     "items": {
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["id", "status", "code", "qty", "evidence", "issue", "recommended", "alternatives", "downgraded_by"],
+        "required": [
+          "id",
+          "status",
+          "code",
+          "qty",
+          "evidence",
+          "issue",
+          "recommended",
+          "alternatives",
+          "downgraded_by"
+        ],
         "properties": {
-          "id": {"type": "integer"},
-          "status": {"enum": ["제안", "확인필요", "코드없음"]},
-          "code": {"type": ["string", "null"]},
-          "qty": {"type": ["integer", "null"], "minimum": 1},
-          "evidence": {"type": "array", "items": {"type": "integer", "minimum": 0}, "minItems": 1},
-          "issue": {"type": ["string", "null"]},
+          "id": {
+            "type": "integer"
+          },
+          "status": {
+            "enum": [
+              "제안",
+              "확인필요",
+              "코드없음"
+            ]
+          },
+          "code": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "qty": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 1
+          },
+          "evidence": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "minItems": 1
+          },
+          "issue": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
           "recommended": {
-            "type": ["object", "null"],
-            "required": ["code", "qty"],
-            "properties": {"code": {"type": "string"}, "qty": {"type": ["integer", "null"]}}
+            "type": [
+              "object",
+              "null"
+            ],
+            "required": [
+              "code",
+              "qty"
+            ],
+            "properties": {
+              "code": {
+                "type": "string"
+              },
+              "qty": {
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              }
+            }
           },
           "alternatives": {
             "type": "array",
             "items": {
               "type": "object",
-              "required": ["code", "qty"],
-              "properties": {"code": {"type": "string"}, "qty": {"type": ["integer", "null"]}}
+              "required": [
+                "code",
+                "qty"
+              ],
+              "properties": {
+                "code": {
+                  "type": "string"
+                },
+                "qty": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ]
+                }
+              }
             }
           },
-          "downgraded_by": {"type": ["string", "null"]}
+          "downgraded_by": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
         }
       }
     },
@@ -52,22 +162,61 @@
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["evidence", "reason"],
+        "required": [
+          "evidence",
+          "reason"
+        ],
         "properties": {
-          "evidence": {"type": "array", "items": {"type": "integer", "minimum": 0}},
-          "reason": {"type": "string"}
+          "evidence": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "reason": {
+            "type": "string"
+          }
         }
       }
     },
-    "warnings": {"type": "array", "items": {"type": "string"}},
+    "warnings": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
     "meta": {
       "type": "object",
-      "required": ["model", "knowledge", "attempts", "failure"],
+      "required": [
+        "model",
+        "knowledge",
+        "attempts",
+        "failure"
+      ],
       "properties": {
-        "model": {"type": "string"},
-        "knowledge": {"type": "string"},
-        "attempts": {"type": "integer", "minimum": 1},
-        "failure": {"type": ["string", "null"]}
+        "model": {
+          "type": "string"
+        },
+        "knowledge": {
+          "type": "string"
+        },
+        "attempts": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "failure": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "cost_usd": {
+          "type": [
+            "number",
+            "null"
+          ]
+        }
       }
     }
   }

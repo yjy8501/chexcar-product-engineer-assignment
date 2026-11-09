@@ -66,7 +66,7 @@
 | items | Item 목록 |
 | excluded | Excluded 목록 |
 | warnings | 누락 경고 등 문자열 목록 |
-| meta | model, knowledge(base 또는 extended), attempts(시도 횟수), failure(해석 실패 사유 또는 null) |
+| meta | model, knowledge(base 또는 extended), attempts(시도 횟수), failure(해석 실패 사유 또는 null), cost_usd(해석 비용, 참고용, 없을 수 있음) |
 
 해석이 실패한 초안(FR-022): overall은 판단불가, items는 문장마다 하나씩 확인필요(code null), meta.failure에 사유를 넣는다.
 
@@ -78,6 +78,7 @@
 | inspection_id, knowledge | 어떤 초안을 승인했는가 |
 | lines | `{code, qty, source}` 목록. source는 제안승인, 직접선택 중 하나 |
 | skipped | "이 작업은 하지 않음"을 고른 항목 id와 이유 |
+| manual | 코드없음이라 확정 오더에 들어가지 않고 수동 처리가 필요한 항목 id 목록 |
 | approved_at | 승인 시각 |
 
 ### AnswerKeyEntry (정답표, 평가용)

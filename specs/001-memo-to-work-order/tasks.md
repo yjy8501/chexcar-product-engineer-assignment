@@ -167,10 +167,10 @@ US3 시험: T032, T033, T034
 | FR-015 | T035, T037 | T032, T040 | tests/test_evaluate.py, `python -m src.evaluate` | 통과 | pytest tests/test_evaluate.py 13 passed. `python -m src.evaluate` 실행, 건별 표와 합계 출력(종료 코드 0). 정답표 사용자 확인(T036) 대기 |
 | FR-016 | T022, T023, T039 | T034, T041 | tests/test_report.py#test_report_embeds_results_and_has_no_external_requests, 수동 절차 T041 | 통과 | pytest tests/test_report.py 통과(외부 주소 0개, 결과 포함). 수동 T041: 서버 API가 404인 상태에서 report.html이 10건과 평가 패널을 보여 줌(2026-11-09, 브라우저; file:// 주소는 확장이 막아 임시 파일 서버로 열어 확인) |
 | FR-017 | T024, T039 | T026, T041 | 수동 절차 T026, T041 (색 구분은 눈으로 확인) | 통과 | 수동 T026과 T041 통과(브라우저 스크린샷으로 문장 색 구분, 상태 표, 서버 없는 report.html 확인) |
-| FR-018 | T043 | T042, T047 | 수동 점검표 T042(1), 사용자가 읽는 절차 T047 | 미검증 | |
-| FR-019 | T043 | T042 | 수동 점검표 T042(2) | 미검증 | |
-| FR-020 | T044 | T042, T047 | 수동 점검표 T042(5), quickstart 시나리오 9 | 미검증 | |
-| FR-021 | T043 | T042 | 수동 점검표 T042(4) | 미검증 | |
+| FR-018 | T043 | T042, T047 | 수동 점검표 T042(1), 사용자가 읽는 절차 T047 | 미검증 | 수동 점검표 T042(1) 통과(네 질문 제목 확인). 내용을 사용자가 읽고 확인하는 T047이 남아 있다 |
+| FR-019 | T043 | T042 | 수동 점검표 T042(2) | 통과 | 수동 점검표 T042(2) 통과: docs/design.md 5번 가정 목록 8개, 6번 현장에 물을 질문 9개 확인(2026-11-09, grep) |
+| FR-020 | T044 | T042, T047 | 수동 점검표 T042(5), quickstart 시나리오 9 | 통과 | 수동 점검표 T042(5) 통과(README 첫 줄 문구, 실행 방법 제목). quickstart 시나리오 9: 새로 복제한 폴더에서 README대로 설치, pytest 91 passed, evaluate, compare, uvicorn 기동과 /api/summary, 409 확인 |
+| FR-021 | T043 | T042 | 수동 점검표 T042(4) | 통과 | 수동 점검표 T042(4) 통과: docs/design.md 2번 "LLM을 쓴 이유와 규칙과의 비교" 확인 |
 | FR-022 | T006, T011, T021, T029 | T006, T015, T027 | tests/test_llm.py, tests/test_pipeline_failure.py#test_failure_after_retry_lists_sentences_as_confirm, test_orders.py#test_map_failure_returns_fallback_draft | 통과 | pytest tests/test_llm.py, test_pipeline_failure.py, test_orders.py#test_map_failure_returns_fallback_draft 통과(재시도 1회, 실패 시 코드 제안 0개와 문장별 확인필요) |
 | SC-001 | T037 | T032, T040 | `python -m src.evaluate` 종료 코드 0과 잘못 확정 0 | 통과 | `python -m src.evaluate` 종료 코드 0, 잘못 확정 합계 0건(기본 문서 10건). 정답표는 우리 해석이며 사용자 확인(T036) 대기 |
 | SC-002 | T035, T037 | T032, T040 | tests/test_evaluate.py#test_wrong_confirm_counted, `python -m src.evaluate` | 통과 | `python -m src.evaluate`: 금지 항목(BP-RR-PT, TY-00-EX 수량 2 초과, GL-FR-EX, BT-12-EX, BP-FR-PT 중복)이 제안으로 나온 건 0건. 정답표 사용자 확인(T036) 대기 |
@@ -178,4 +178,4 @@ US3 시험: T032, T033, T034
 | SC-004 | T038 | T033, T040 | tests/test_compare.py#test_compare_counts_per_status, `python -m src.compare` | 통과 | `python -m src.compare`: 기본 제안 5 → 보강 제안 10(+5). 증가 폭은 보고만 하고 합격 기준으로 삼지 않음 |
 | SC-005 | T038 | T033, T040 | tests/test_compare.py#test_per_inspection_counts_reported | 통과 | `python -m src.compare` 건별 제안/확인필요/코드없음 개수 출력, tests/test_compare.py#test_per_inspection_counts_reported 통과 |
 | SC-006 | T039 | T034, T041 | tests/test_report.py, 수동 절차 T041 | 통과 | pytest tests/test_report.py 통과, 수동 T041 통과(서버 API 없이 report.html이 열림) |
-| SC-007 | T043 | T042, T047 | 수동 점검표 T042(3), 사용자가 읽는 절차 T047 | 미검증 | |
+| SC-007 | T043 | T042, T047 | 수동 점검표 T042(3), 사용자가 읽는 절차 T047 | 미검증 | 수동 점검표 T042(3) 통과("도입 전" 기준선과 "0건" 문구 확인). 사용자가 읽고 확인하는 T047이 남아 있다 |
