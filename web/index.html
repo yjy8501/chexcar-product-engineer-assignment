@@ -140,7 +140,7 @@ function renderDetail() {
   if (d.warnings.length) box.append(h('section', {class: 'card'}, h('h2', {}, '경고'), h('ul', {class: 'plain'}, d.warnings.map(w => h('li', {}, w)))));
 
   box.append(h('div', {id: 'approval'}));
-  renderApproval(d, box);
+  renderApproval(d);
   box.append(h('p', {class: 'muted small'}, '모델 ', d.meta.model, ' / 지식 문서 ', d.meta.knowledge, ' / 시도 ', d.meta.attempts, '번',
     d.items.some(i => i.downgraded_by) ? ' / 프로그램 검사로 내려간 항목: ' + d.items.filter(i => i.downgraded_by).map(i => '#' + i.id + '(' + i.downgraded_by + ')').join(', ') : ''));
 }
@@ -153,16 +153,76 @@ function confirmCard(d, i) {
   return h('div', {class: 'confirm', 'data-item': i.id},
     h('div', {class: 'issue'}, i.issue),
     h('div', {class: 'ev'}, evidenceText(d, i.evidence)),
-    opts.map(o => h('div', {class: 'opt'}, selector(i, o.code), h('span', {class: 'code'}, o.code), ' ', codeName(o.code), ' ',
+    opts.map(o => h('div', {class: 'opt'}, selector(d, i, o.code, o.qty), h('span', {class: 'code'}, o.code), ' ', codeName(o.code), ' ',
       o.qty ? '수량 ' + o.qty : '', o.rec ? h('span', {class: 'chip c-ok'}, '추천') : '')),
     !opts.length ? h('div', {class: 'muted small'}, '추천할 코드가 없습니다. 직접 고릅니다.') : null,
-    selectorExtra(i));
+    selectorExtra(d, i));
 }
 
-// 승인 단계에서 덮어쓰는 자리 (서버가 있을 때만 동작한다)
-function selector() { return h('span', {}); }
-function selectorExtra() { return null; }
-function renderApproval() {}
+// ---- 승인 (서버가 있을 때만 동작한다. 저장된 결과만 볼 때는 선택이 잠긴다) ----
+const PICK = {}, ORDER = {};
+const pickOf = (d) => (PICK[d.inspection_id] = PICK[d.inspection_id] || {});
+const confirmItems = (d) => d.items.filter(i => i.status === '확인필요');
+const unresolved = (d) => confirmItems(d).filter(i => !pickOf(d)[i.id]);
+const locked = (d) => STATIC || !!ORDER[d.inspection_id];
+function setPick(d, i, choice, qty) { pickOf(d)[i.id] = {choice, qty}; updateApprove(d); }
+
+function selector(d, i, code, qty) {
+  const cur = pickOf(d)[i.id];
+  return h('input', {type: 'radio', name: `pick-${d.inspection_id}-${i.id}`, value: code,
+    checked: !!cur && cur.choice === code, disabled: locked(d), onchange: () => setPick(d, i, code, qty)});
+}
+
+function selectorExtra(d, i) {
+  const name = `pick-${d.inspection_id}-${i.id}`, cur = pickOf(d)[i.id];
+  const qty = h('input', {type: 'number', min: 1, value: 1, style: 'width:56px', disabled: locked(d)});
+  const any = h('select', {disabled: locked(d), 'aria-label': '다른 코드 직접 고르기', onchange: (e) => {
+    document.querySelectorAll(`input[name="${name}"]`).forEach(r => { r.checked = false; });
+    if (e.target.value) setPick(d, i, e.target.value, Math.max(1, parseInt(qty.value) || 1));
+  }}, h('option', {value: ''}, '다른 코드 직접 고르기...'),
+    Object.entries(DATA.catalog).map(([c, v]) => h('option', {value: c}, c + ' ' + v.name)));
+  return h('div', {class: 'opt'},
+    h('input', {type: 'radio', name, value: 'skip', checked: !!cur && cur.choice === 'skip', disabled: locked(d), onchange: () => setPick(d, i, 'skip')}),
+    '이 작업은 하지 않음', h('span', {class: 'muted'}, ' | '), any, '수량', qty);
+}
+
+function renderApproval(d) {
+  const box = $('approval'); box.replaceChildren();
+  const done = ORDER[d.inspection_id];
+  if (done) {
+    box.append(h('section', {class: 'card'}, h('div', {class: 'done'}, h('b', {}, '확정 오더가 저장되었습니다. '), done.approved_at.replace('T', ' ').slice(0, 16)),
+      h('table', {}, h('thead', {}, h('tr', {}, ['코드', '이름', '수량', '출처'].map(t => h('th', {}, t)))),
+        h('tbody', {}, done.lines.map(l => h('tr', {}, h('td', {class: 'code'}, l.code), h('td', {}, codeName(l.code)), h('td', {}, l.qty), h('td', {}, l.source))))),
+      done.skipped.length ? h('p', {class: 'small muted'}, '하지 않기로 한 항목: #' + done.skipped.map(s => s.item_id).join(', #')) : null,
+      done.manual.length ? h('p', {class: 'small'}, '수동 처리가 필요한 항목(코드없음): #' + done.manual.join(', #')) : null));
+    return;
+  }
+  if (STATIC) { box.append(h('div', {class: 'banner info'}, '저장된 결과를 보는 화면이라 승인은 할 수 없습니다. 서버를 켜면(uvicorn src.app:app) 승인할 수 있습니다.')); return; }
+  box.append(h('section', {class: 'card'}, h('h2', {}, '오더 승인'), h('div', {id: 'approve-msg', class: 'small muted'}),
+    h('button', {class: 'primary', id: 'approve', onclick: () => approve(d)}, '승인'), h('div', {id: 'approve-err'})));
+  updateApprove(d);
+}
+
+function updateApprove(d) {
+  const b = $('approve'); if (!b) return;
+  const left = unresolved(d), nSug = d.items.filter(i => i.status === '제안').length;
+  b.disabled = left.length > 0;
+  $('approve-msg').textContent = left.length
+    ? `확인필요 ${left.length}개를 고르거나 "이 작업은 하지 않음"을 골라야 승인할 수 있습니다. (제안 ${nSug}개는 한 번에 승인됩니다)`
+    : `모두 정리했습니다. 승인하면 제안 ${nSug}개와 고른 항목이 확정 오더로 저장됩니다.`;
+}
+
+async function approve(d) {
+  const sel = Object.entries(pickOf(d)).map(([id, p]) => ({item_id: +id, choice: p.choice, qty: p.qty || null}));
+  const r = await fetch('/api/orders', {method: 'POST', headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({inspection_id: d.inspection_id, knowledge: DATA.knowledge, selections: sel})});
+  const body = await r.json();
+  if (!r.ok) {
+    const msg = r.status === 409 ? '아직 확인필요가 남아 있습니다: #' + body.detail.remaining.join(', #') : (typeof body.detail === 'string' ? body.detail : JSON.stringify(body.detail));
+    $('approve-err').replaceChildren(h('div', {class: 'err'}, msg)); return;
+  }
+  ORDER[d.inspection_id] = body; render();
+}
 
 async function render() { renderList(); renderDetail(); }
 

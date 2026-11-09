@@ -79,11 +79,11 @@ description: "검수 메모를 작업 오더 초안으로 바꾸기 작업 목�
 
 **Independent Test**: `pytest tests/test_orders.py`가 통과하고, 화면에서 확인필요가 남으면 승인이 막힌다.
 
-- [ ] T027 [P] [US2] `tests/test_orders.py`에 `test_approve_blocked_when_confirm_remains`(409와 남은 item id), `test_approve_saves_confirmed_order`(200과 `orders/<id>.json`), `test_skip_choice_excluded_from_order`, `test_unknown_code_rejected`(422), `test_missing_draft_404`, `test_map_failure_returns_fallback_draft`(`/api/map` 실패 시 FR-022 초안), `test_choose_any_catalog_code_when_no_recommendation`(추천이 없는 항목에 코드표의 코드를 고를 수 있다), `test_no_code_item_does_not_block_approval`(코드없음은 승인을 막지 않고 확정 오더에 들어가지 않는다)를 쓴다. 저장 폴더는 임시 폴더를 쓴다 (FR-012, FR-022)
-- [ ] T028 [US2] `src/orders.py`를 만든다. 선택 검증(확인필요 모두 해결, 코드표 확인), 확정 오더 만들기와 저장 (data-model.md ConfirmedOrder: lines의 source는 제안승인 또는 직접선택, skipped, approved_at) (FR-012; T027)
-- [ ] T029 [US2] `src/app.py`에 `POST /api/orders`, `GET /api/orders`, `POST /api/map`을 추가한다. 응답 코드는 contracts/api.md (FR-012, FR-022)
-- [ ] T030 [US2] `web/index.html`에 승인 화면을 추가한다. 확인필요마다 추천과 대안을 고르거나 "이 작업은 하지 않음"을 고르고, 모두 정리되기 전에는 승인 버튼이 눌리지 않는다. 제안 항목은 한 번에 승인한다 (FR-012)
-- [ ] T031 [US2] 수동 검증: 화면에서 확인필요를 남긴 채 승인이 막히는 것, 모두 고른 뒤 승인하면 `orders/`에 파일이 생기는 것을 본다. 자동화하지 못하는 이유: 화면 버튼의 막힘 상태는 눈으로 확인한다. 서버 쪽 규칙은 T027이 자동으로 검증한다 (FR-012)
+- [X] T027 [P] [US2] `tests/test_orders.py`에 `test_approve_blocked_when_confirm_remains`(409와 남은 item id), `test_approve_saves_confirmed_order`(200과 `orders/<id>.json`), `test_skip_choice_excluded_from_order`, `test_unknown_code_rejected`(422), `test_missing_draft_404`, `test_map_failure_returns_fallback_draft`(`/api/map` 실패 시 FR-022 초안), `test_choose_any_catalog_code_when_no_recommendation`(추천이 없는 항목에 코드표의 코드를 고를 수 있다), `test_no_code_item_does_not_block_approval`(코드없음은 승인을 막지 않고 확정 오더에 들어가지 않는다)를 쓴다. 저장 폴더는 임시 폴더를 쓴다 (FR-012, FR-022)
+- [X] T028 [US2] `src/orders.py`를 만든다. 선택 검증(확인필요 모두 해결, 코드표 확인), 확정 오더 만들기와 저장 (data-model.md ConfirmedOrder: lines의 source는 제안승인 또는 직접선택, skipped, approved_at) (FR-012; T027)
+- [X] T029 [US2] `src/app.py`에 `POST /api/orders`, `GET /api/orders`, `POST /api/map`을 추가한다. 응답 코드는 contracts/api.md (FR-012, FR-022)
+- [X] T030 [US2] `web/index.html`에 승인 화면을 추가한다. 확인필요마다 추천과 대안을 고르거나 "이 작업은 하지 않음"을 고르고, 모두 정리되기 전에는 승인 버튼이 눌리지 않는다. 제안 항목은 한 번에 승인한다 (FR-012)
+- [X] T031 [US2] 수동 검증: 화면에서 확인필요를 남긴 채 승인이 막히는 것, 모두 고른 뒤 승인하면 `orders/`에 파일이 생기는 것을 본다. 자동화하지 못하는 이유: 화면 버튼의 막힘 상태는 눈으로 확인한다. 서버 쪽 규칙은 T027이 자동으로 검증한다 (FR-012)
 
 **Checkpoint**: US1과 US2가 모두 동작한다.
 
@@ -161,7 +161,7 @@ US3 시험: T032, T033, T034
 | FR-009 | T020 | T014 | tests/test_validator.py#test_v6_duplicate_codes_merged | 통과 | pytest tests/test_validator.py#test_v6_* 통과 |
 | FR-010 | T019, T021 | T016 | tests/test_contract.py#test_excluded_item_has_reason | 통과 | pytest tests/test_contract.py#test_excluded_item_has_reason 통과 |
 | FR-011 | T020 | T014 | tests/test_validator.py#test_v5_tire_qty_over_2_becomes_confirm, test_v5_brake_front_rear_unknown_becomes_confirm | 통과 | pytest tests/test_validator.py(V5) 통과 |
-| FR-012 | T028, T029, T030 | T027, T031 | tests/test_orders.py (409, 422, 저장, 추천 없는 항목의 코드 선택, 코드없음이 승인을 막지 않음), 수동 절차 T031 | 미검증 | |
+| FR-012 | T028, T029, T030 | T027, T031 | tests/test_orders.py (409, 422, 저장, 추천 없는 항목의 코드 선택, 코드없음이 승인을 막지 않음), 수동 절차 T031 | 통과 | pytest tests/test_orders.py 12 passed(409, 422, 저장, skip, 추천 없는 항목의 코드 선택, 코드없음이 승인을 막지 않음). 수동 T031: 확인필요가 남으면 승인 버튼이 잠기고, 추천을 고르면 열려 승인 시 확정 오더가 저장됨(2026-11-09, 브라우저, INS-003) |
 | FR-013 | T010, T020 | T005, T014 | tests/test_validator.py#test_v8_unlinked_sentence_warns | 통과 | pytest tests/test_sentences.py, test_validator.py(V8) 통과 |
 | FR-014 | T012, T013, T018, T038 | T017, T033, T040 | tests/test_knowledge.py#test_glossary_entry_changes_prompt, test_compare.py | 미검증 | 부분: T017 통과(pytest tests/test_knowledge.py). T033, T040 대기 |
 | FR-015 | T035, T037 | T032, T040 | tests/test_evaluate.py, `python -m src.evaluate` | 미검증 | |
@@ -171,7 +171,7 @@ US3 시험: T032, T033, T034
 | FR-019 | T043 | T042 | 수동 점검표 T042(2) | 미검증 | |
 | FR-020 | T044 | T042, T047 | 수동 점검표 T042(5), quickstart 시나리오 9 | 미검증 | |
 | FR-021 | T043 | T042 | 수동 점검표 T042(4) | 미검증 | |
-| FR-022 | T006, T011, T021, T029 | T006, T015, T027 | tests/test_llm.py, tests/test_pipeline_failure.py#test_failure_after_retry_lists_sentences_as_confirm, test_orders.py#test_map_failure_returns_fallback_draft | 미검증 | 부분: T006, T015 통과(pytest tests/test_llm.py, test_pipeline_failure.py). T027 대기 |
+| FR-022 | T006, T011, T021, T029 | T006, T015, T027 | tests/test_llm.py, tests/test_pipeline_failure.py#test_failure_after_retry_lists_sentences_as_confirm, test_orders.py#test_map_failure_returns_fallback_draft | 통과 | pytest tests/test_llm.py, test_pipeline_failure.py, test_orders.py#test_map_failure_returns_fallback_draft 통과(재시도 1회, 실패 시 코드 제안 0개와 문장별 확인필요) |
 | SC-001 | T037 | T032, T040 | `python -m src.evaluate` 종료 코드 0과 잘못 확정 0 | 미검증 | |
 | SC-002 | T035, T037 | T032, T040 | tests/test_evaluate.py#test_wrong_confirm_counted, `python -m src.evaluate` | 미검증 | |
 | SC-003 | T035, T037 | T032, T040 | tests/test_evaluate.py#test_overall_mismatch_counted, `python -m src.evaluate` | 미검증 | |
