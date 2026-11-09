@@ -21,9 +21,9 @@ description: "검수 메모를 작업 오더 초안으로 바꾸기 작업 목�
 
 ## Phase 1: Setup
 
-- [ ] T001 `pyproject.toml`을 만든다. 패키지는 `src`, 의존성은 fastapi, pydantic, uvicorn, 개발용 pytest, httpx, jsonschema (plan Technical Context)
-- [ ] T002 [P] `uv venv`로 `.venv`를 만들고 `uv pip install -e ".[dev]"`를 실행한다. `python -c "import fastapi, pydantic"`와 `pytest --version`이 성공해야 한다 (research Q3의 남은 미확인 해소)
-- [ ] T003 [P] 폴더 `tests/`, `results/`, `orders/`, `web/`, `knowledge/base/`, `knowledge/extended/`, `docs/`를 만든다. 빈 폴더에는 `.gitkeep`을 두고 `orders/*.json`은 `.gitignore`에 넣는다
+- [X] T001 `pyproject.toml`을 만든다. 패키지는 `src`, 의존성은 fastapi, pydantic, uvicorn, 개발용 pytest, httpx, jsonschema (plan Technical Context)
+- [X] T002 [P] `uv venv`로 `.venv`를 만들고 `uv pip install -e ".[dev]"`를 실행한다. `python -c "import fastapi, pydantic"`와 `pytest --version`이 성공해야 한다 (research Q3의 남은 미확인 해소)
+- [X] T003 [P] 폴더 `tests/`, `results/`, `orders/`, `web/`, `knowledge/base/`, `knowledge/extended/`, `docs/`를 만든다. 빈 폴더에는 `.gitkeep`을 두고 `orders/*.json`은 `.gitignore`에 넣는다
 
 ---
 
@@ -31,16 +31,16 @@ description: "검수 메모를 작업 오더 초안으로 바꾸기 작업 목�
 
 **Checkpoint**: 이 단계가 끝나야 US1~US3을 시작할 수 있다.
 
-- [ ] T004 [P] 시험 작성: `tests/test_catalog.py` — `data/work_codes.csv`에서 코드 35개를 읽고, 없는 코드는 거절한다 (FR-003)
-- [ ] T005 [P] 시험 작성: `tests/test_sentences.py` — 메모를 `(?<=[.!?])\s+|\n+` 기준으로 나누고 번호가 0부터 안정적으로 매겨진다 (FR-004, FR-013)
-- [ ] T006 [P] 시험 작성: `tests/test_llm.py` — 가짜 실행기로 첫 호출 실패 후 두 번째 성공, 두 번 모두 실패하면 사유를 담은 예외를 낸다. 시도 횟수는 최대 2회다 (FR-022)
-- [ ] T007 `src/config.py`를 만든다. 경로(data, knowledge, results, orders)와 모델 이름 `claude-sonnet-5-5`(환경변수로 바꿀 수 있음)
-- [ ] T008 [P] `src/models.py`에 Pydantic 모델(Sentence, Item, Excluded, Draft, ConfirmedOrder)을 만든다. data-model.md 제약을 그대로 옮긴다: Item의 "상태가 제안이면 code와 qty가 있어야 하고, 코드는 코드표에 있어야 한다", evidence는 "비어 있으면 안 된다", qty는 minimum 1 또는 null, status는 제안, 확인필요, 코드없음 중 하나, Draft.overall은 정상, 작업없음, 판단불가 중 하나, meta.attempts는 minimum 1 (FR-001, FR-002)
-- [ ] T009 [P] `src/catalog.py`를 만든다. 코드표 읽기와 코드 존재 확인 (FR-003; T004를 통과시킨다)
-- [ ] T010 [P] `src/sentences.py`를 만든다 (FR-004, FR-013; T005를 통과시킨다)
-- [ ] T011 `src/llm.py`를 만든다. `claude -p --model <모델> --output-format json --json-schema <스키마> --tools "" --no-session-persistence --setting-sources "" --system-prompt <...>`를 임시 폴더에서 실행하고 `structured_output`을 읽는다. 실패하면 자동으로 한 번 더 시도하고, 그래도 실패하면 사유를 담은 예외를 낸다 (FR-022; T006을 통과시킨다)
-- [ ] T012 [P] `knowledge/base/glossary.json`, `rules.json`, `tone.json`을 만든다. 문서에서 근거를 찾은 것만 넣는다. 말투는 지시(도색, 탈부착 요망, 진행 부탁)와 확인필요(권장, ~할 듯, ~나을 것 같음, 점검 필요, 봐주세요)로 나눈다. "프싸", "휀다" 단독, 트레드 몇 mm, "1짝", 부분 광택은 넣지 않는다(문서에서 답을 찾지 못한 것) (FR-014, 명시 Assumptions 7번)
-- [ ] T013 [P] `knowledge/extended/*.json`을 만든다. 기본본에 가정을 더한다(프싸=우측 앞휀다, 휀다 단독=앞휀다, 트레드 3mm 이하는 교환 대상, 1짝=타이어 1개, 광택만 적으면 전체 광택 등). 각 파일에 `"_note": "가정이며 점수에 넣지 않는다"`를 둔다 (FR-014)
+- [X] T004 [P] 시험 작성: `tests/test_catalog.py` — `data/work_codes.csv`에서 코드 35개를 읽고, 없는 코드는 거절한다 (FR-003)
+- [X] T005 [P] 시험 작성: `tests/test_sentences.py` — 메모를 `(?<=[.!?])\s+|\n+` 기준으로 나누고 번호가 0부터 안정적으로 매겨진다 (FR-004, FR-013)
+- [X] T006 [P] 시험 작성: `tests/test_llm.py` — 가짜 실행기로 첫 호출 실패 후 두 번째 성공, 두 번 모두 실패하면 사유를 담은 예외를 낸다. 시도 횟수는 최대 2회다 (FR-022)
+- [X] T007 `src/config.py`를 만든다. 경로(data, knowledge, results, orders)와 모델 이름 `claude-sonnet-5-5`(환경변수로 바꿀 수 있음)
+- [X] T008 [P] `src/models.py`에 Pydantic 모델(Sentence, Item, Excluded, Draft, ConfirmedOrder)을 만든다. data-model.md 제약을 그대로 옮긴다: Item의 "상태가 제안이면 code와 qty가 있어야 하고, 코드는 코드표에 있어야 한다", evidence는 "비어 있으면 안 된다", qty는 minimum 1 또는 null, status는 제안, 확인필요, 코드없음 중 하나, Draft.overall은 정상, 작업없음, 판단불가 중 하나, meta.attempts는 minimum 1 (FR-001, FR-002)
+- [X] T009 [P] `src/catalog.py`를 만든다. 코드표 읽기와 코드 존재 확인 (FR-003; T004를 통과시킨다)
+- [X] T010 [P] `src/sentences.py`를 만든다 (FR-004, FR-013; T005를 통과시킨다)
+- [X] T011 `src/llm.py`를 만든다. `claude -p --model <모델> --output-format json --json-schema <스키마> --tools "" --no-session-persistence --setting-sources "" --system-prompt <...>`를 임시 폴더에서 실행하고 `structured_output`을 읽는다. 실패하면 자동으로 한 번 더 시도하고, 그래도 실패하면 사유를 담은 예외를 낸다 (FR-022; T006을 통과시킨다)
+- [X] T012 [P] `knowledge/base/glossary.json`, `rules.json`, `tone.json`을 만든다. 문서에서 근거를 찾은 것만 넣는다. 말투는 지시(도색, 탈부착 요망, 진행 부탁)와 확인필요(권장, ~할 듯, ~나을 것 같음, 점검 필요, 봐주세요)로 나눈다. "프싸", "휀다" 단독, 트레드 몇 mm, "1짝", 부분 광택은 넣지 않는다(문서에서 답을 찾지 못한 것) (FR-014, 명시 Assumptions 7번)
+- [X] T013 [P] `knowledge/extended/*.json`을 만든다. 기본본에 가정을 더한다(프싸=우측 앞휀다, 휀다 단독=앞휀다, 트레드 3mm 이하는 교환 대상, 1짝=타이어 1개, 광택만 적으면 전체 광택 등). 각 파일에 `"_note": "가정이며 점수에 넣지 않는다"`를 둔다 (FR-014)
 
 ---
 

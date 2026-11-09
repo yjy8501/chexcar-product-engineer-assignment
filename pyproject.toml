@@ -1,0 +1,24 @@
+[project]
+name = "chexcar-assignment"
+version = "0.1.0"
+description = "검수 메모를 표준 작업 코드 오더 초안으로 바꾼다"
+requires-python = ">=3.11"
+dependencies = [
+  "fastapi",
+  "pydantic>=2",
+  "uvicorn",
+]
+
+[project.optional-dependencies]
+dev = ["pytest", "httpx", "jsonschema"]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]

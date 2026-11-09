@@ -1,0 +1,18 @@
+{
+  "_note": "가정이며 점수에 넣지 않는다. 기본본에 현장 약어와 방향 가정을 더한 보강본이다. 현장에서 확인하기 전까지는 추정이다.",
+  "terms": [
+    {"term": "앞범퍼", "means": "프론트범퍼", "source": "inspections.json INS-010 메모가 앞범퍼와 프론트범퍼를 같은 부위로 적음"},
+    {"term": "뒷범퍼", "means": "리어범퍼", "source": "work_codes.csv 부위명 리어범퍼와 일상 표현의 대응"},
+    {"term": "좌측 / 우측", "means": "코드 이름의 좌측(L)과 우측(R)", "source": "work_codes.csv FD-FL-SP, FD-FR-SP"},
+    {"term": "탈부착", "means": "부품을 떼었다 다시 붙이는 작업(범퍼, 본넷, 헤드램프)", "source": "work_codes.csv BP-FR-RM, HD-00-RM, HL-00-RM"},
+    {"term": "도색", "means": "판금 없이 칠하는 작업(-PT 코드)", "source": "work_codes.csv BP-FR-PT, HD-00-PT, MR-00-PT"},
+    {"term": "판금도색", "means": "판금(찌그러짐 펴기)을 한 뒤 칠하는 작업(-SP 코드)", "source": "work_codes.csv HD-00-SP"},
+    {"term": "덴트복원", "means": "도색 없이 찌그러짐만 복원하는 작업", "source": "work_codes.csv DR-00-PDR"},
+    {"term": "교환 / 교체", "means": "부품을 새것으로 바꾸는 작업(-EX 코드)", "source": "work_codes.csv -EX 코드"},
+    {"term": "광택", "means": "전체 광택(CL-00-PL)", "source": "work_codes.csv CL-00-PL"},
+    {"term": "프싸", "means": "프론트 사이드, 즉 우측 앞휀다(FD-FR-SP)로 본다", "source": "가정(추정): 현장 약어로 보이나 확인하지 못함"},
+    {"term": "운전석", "means": "좌측", "source": "가정(추정): 국내 차량 기준"},
+    {"term": "조수석", "means": "우측", "source": "가정(추정): 국내 차량 기준"},
+    {"term": "뎁흠", "means": "덴트(움푹 들어간 찌그러짐)", "source": "가정(추정): 오타로 보임"}
+  ]
+}

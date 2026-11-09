@@ -1,0 +1,14 @@
+{
+  "_note": "기본본: 과제 자료(코드표, 메모)에서 근거를 찾을 수 있는 용어만 담는다. 현장 약어(프싸 등)는 넣지 않는다.",
+  "terms": [
+    {"term": "앞범퍼", "means": "프론트범퍼", "source": "inspections.json INS-010 메모가 앞범퍼와 프론트범퍼를 같은 부위로 적음"},
+    {"term": "뒷범퍼", "means": "리어범퍼", "source": "work_codes.csv 부위명 리어범퍼와 일상 표현의 대응"},
+    {"term": "좌측 / 우측", "means": "코드 이름의 좌측(L)과 우측(R)", "source": "work_codes.csv FD-FL-SP 좌측 프론트휀다, FD-FR-SP 우측 프론트휀다"},
+    {"term": "탈부착", "means": "부품을 떼었다 다시 붙이는 작업(범퍼, 본넷, 헤드램프)", "source": "work_codes.csv BP-FR-RM, HD-00-RM, HL-00-RM"},
+    {"term": "도색", "means": "판금 없이 칠하는 작업(-PT 코드)", "source": "work_codes.csv BP-FR-PT, HD-00-PT, MR-00-PT"},
+    {"term": "판금도색", "means": "판금(찌그러짐 펴기)을 한 뒤 칠하는 작업(-SP 코드)", "source": "work_codes.csv HD-00-SP 본넷 판금도색"},
+    {"term": "덴트복원", "means": "도색 없이 찌그러짐만 복원하는 작업", "source": "work_codes.csv DR-00-PDR 비고 도색 불필요한 경우"},
+    {"term": "교환 / 교체", "means": "부품을 새것으로 바꾸는 작업(-EX 코드). 코드표는 교환으로 적는다", "source": "work_codes.csv -EX 코드, INS-010 메모의 교체 표현"},
+    {"term": "광택", "means": "전체 광택(CL-00-PL)", "source": "work_codes.csv CL-00-PL 전체 광택. 부분 광택 코드는 없음"}
+  ]
+}
