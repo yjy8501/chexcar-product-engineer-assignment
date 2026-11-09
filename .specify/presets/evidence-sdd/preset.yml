@@ -1,0 +1,81 @@
+schema_version: "1.0"
+
+preset:
+  id: "evidence-sdd"
+  name: "Evidence SDD"
+  version: "0.1.0"
+  description: "Adds evidence tagging, search-scope rules, a question ledger and requirement-to-test gates on top of the core workflow"
+  author: "jaeyong"
+  license: "MIT"
+
+requires:
+  speckit_version: ">=1.1.0"
+
+provides:
+  templates:
+    # 템플릿: 코어 템플릿 뒤에 섹션을 덧붙인다 (코어 업그레이드를 그대로 따라감)
+    - type: "template"
+      name: "constitution-template"
+      file: "templates/constitution-template.md"
+      description: "Evidence principles appended to the core constitution template"
+      strategy: "append"
+
+    - type: "template"
+      name: "spec-template"
+      file: "templates/spec-template.md"
+      description: "Requirement evidence table appended to the core spec template"
+      strategy: "append"
+
+    - type: "template"
+      name: "plan-template"
+      file: "templates/plan-template.md"
+      description: "Evidence gate appended to the core plan template"
+      strategy: "append"
+
+    - type: "template"
+      name: "tasks-template"
+      file: "templates/tasks-template.md"
+      description: "Requirement-to-verification table appended to the core tasks template"
+      strategy: "append"
+
+    # 명령: 코어 지침 뒤에 근거 규칙을 덧붙인다
+    - type: "command"
+      name: "speckit.specify"
+      file: "commands/speckit.specify.md"
+      description: "Tag every requirement with its source"
+      strategy: "append"
+
+    - type: "command"
+      name: "speckit.plan"
+      file: "commands/speckit.plan.md"
+      description: "Write research.md as a question ledger with search scope"
+      strategy: "append"
+
+    - type: "command"
+      name: "speckit.tasks"
+      file: "commands/speckit.tasks.md"
+      description: "Require a verification task for every MUST requirement"
+      strategy: "append"
+
+    - type: "command"
+      name: "speckit.implement"
+      file: "commands/speckit.implement.md"
+      description: "Close a task only after its verification passes"
+      strategy: "append"
+
+    - type: "command"
+      name: "speckit.analyze"
+      file: "commands/speckit.analyze.md"
+      description: "Report evidence, verification and ledger gaps"
+      strategy: "append"
+
+    - type: "command"
+      name: "speckit.converge"
+      file: "commands/speckit.converge.md"
+      description: "Report unassessed scope as unknown, not absent"
+      strategy: "append"
+
+tags:
+  - "evidence"
+  - "traceability"
+  - "verification"

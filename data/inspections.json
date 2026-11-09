@@ -1,0 +1,76 @@
+[
+  {
+    "inspection_id": "INS-001",
+    "vehicle": { "model": "그랜저 IG 2.5", "year": 2021, "mileage_km": 48200 },
+    "inspector": "김OO",
+    "inspected_at": "2026-09-02T09:14:00+09:00",
+    "memo": "프싸 우측 스크래치 15cm, 도색 필요. 본넷 단차 약간 있음 탈부착 요망."
+  },
+  {
+    "inspection_id": "INS-002",
+    "vehicle": { "model": "K5 DL3 1.6T", "year": 2022, "mileage_km": 31500 },
+    "inspector": "이OO",
+    "inspected_at": "2026-09-02T10:02:00+09:00",
+    "memo": "특이사항 없음. 실내 상태 양호."
+  },
+  {
+    "inspection_id": "INS-003",
+    "vehicle": {
+      "model": "벤츠 E300 4MATIC",
+      "year": 2020,
+      "mileage_km": 72400
+    },
+    "inspector": "김OO",
+    "inspected_at": "2026-09-02T11:20:00+09:00",
+    "memo": "운전석 휀다 찍힘 5cm 판금 후 도색. 타이어 상태 안 좋음. 배터리 방전 이력 있어 점검 필요."
+  },
+  {
+    "inspection_id": "INS-004",
+    "vehicle": { "model": "BMW 520i", "year": 2021, "mileage_km": 55100 },
+    "inspector": "박OO",
+    "inspected_at": "2026-09-02T13:05:00+09:00",
+    "memo": "뒷범퍼 스크래치 있으나 경미하여 작업 불필요. 광택만 진행."
+  },
+  {
+    "inspection_id": "INS-005",
+    "vehicle": { "model": "볼보 XC60 B5", "year": 2022, "mileage_km": 29800 },
+    "inspector": "이OO",
+    "inspected_at": "2026-09-02T14:30:00+09:00",
+    "memo": "썬루프 모터에서 소음 발생. 개폐는 정상."
+  },
+  {
+    "inspection_id": "INS-006",
+    "vehicle": { "model": "쏘렌토 MQ4", "year": 2021, "mileage_km": 61300 },
+    "inspector": "김OO",
+    "inspected_at": "2026-09-03T09:00:00+09:00",
+    "memo": "앞타이어 양쪽 트레드 2mm. 뒷타이어는 6mm 정도로 아직 여유 있음. 얼라인먼트도 같이 봐주세요."
+  },
+  {
+    "inspection_id": "INS-008",
+    "vehicle": { "model": "G80 RG3", "year": 2022, "mileage_km": 39400 },
+    "inspector": "박OO",
+    "inspected_at": "2026-09-03T11:45:00+09:00",
+    "memo": "조수석 도어 뎁흠. PDR로 가능할 듯. 사이드미러 커버 기스는 도색보다 교환이 나을 것 같음. 앞유리 하단 실금 10cm."
+  },
+  {
+    "inspection_id": "INS-010",
+    "vehicle": { "model": "BMW 320i", "year": 2020, "mileage_km": 81500 },
+    "inspector": "이OO",
+    "inspected_at": "2026-09-03T15:20:00+09:00",
+    "memo": "앞범퍼 도색. 프론트범퍼 좌측에도 스크래치 있어 같이 진행. 브레이크 패드 잔량 3mm 교체 권장."
+  },
+  {
+    "inspection_id": "INS-019",
+    "vehicle": { "model": "투싼 NX4", "year": 2020, "mileage_km": 92100 },
+    "inspector": "최OO",
+    "inspected_at": "2026-09-05T15:30:00+09:00",
+    "memo": "전체적으로 관리 안 된 차량. 외판 여러 군데 손봐야 함."
+  },
+  {
+    "inspection_id": "INS-020",
+    "vehicle": { "model": "벤츠 C200", "year": 2021, "mileage_km": 50400 },
+    "inspector": "박OO",
+    "inspected_at": "2026-09-05T16:45:00+09:00",
+    "memo": "본넷 판금도색, 프론트범퍼 도색, 좌측 헤드램프 탈부착. 작업 후 광택까지 진행 부탁드립니다. 참고로 앞유리는 이전 오너가 교체했다고 함."
+  }
+]

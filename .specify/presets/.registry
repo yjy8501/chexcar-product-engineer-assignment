@@ -1,0 +1,33 @@
+{
+  "schema_version": "1.0",
+  "presets": {
+    "evidence-sdd": {
+      "version": "0.1.0",
+      "source": "local",
+      "manifest_hash": "sha256:8e5fb6e7d4e2f04c514980c21729f1f0af66d9161422249ea02dbbb1b526f9d0",
+      "enabled": true,
+      "priority": 10,
+      "registered_commands": {
+        "claude": [
+          "speckit.specify",
+          "speckit.plan",
+          "speckit.tasks",
+          "speckit.implement",
+          "speckit.analyze",
+          "speckit.converge"
+        ]
+      },
+      "registered_skills": {
+        "claude": [
+          "speckit-specify",
+          "speckit-plan",
+          "speckit-tasks",
+          "speckit-implement",
+          "speckit-analyze",
+          "speckit-converge"
+        ]
+      },
+      "installed_at": "2026-11-06T03:54:29.608730+00:00"
+    }
+  }
+}
