@@ -1,5 +1,6 @@
 """Claude Code CLI(`claude -p`) 호출. 실패하면 한 번 더 시도하고, 그래도 실패하면 사유를 담은 예외를 낸다 (FR-022)."""
 import json
+import re
 import subprocess
 import tempfile
 from typing import Callable
@@ -20,8 +21,14 @@ class LLMFailure(Exception):
         self.attempts = attempts
 
 
-def claude_cli_runner(system: str, user: str, schema: dict, model: str) -> dict:
-    cmd = [
+_MODEL_NAME = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]*$")
+
+
+def build_command(system: str, schema: dict, model: str) -> list[str]:
+    """명령줄을 만든다. 메모 본문(사용자 입력)은 옵션으로 읽히지 않도록 여기에 넣지 않고 표준 입력으로 보낸다."""
+    if not _MODEL_NAME.match(model or ""):
+        raise LLMError(f"허용되지 않는 모델 이름: {model!r}")
+    return [
         "claude", "-p", "--model", model,
         "--output-format", "json",
         "--json-schema", json.dumps(schema, ensure_ascii=False),
@@ -29,12 +36,16 @@ def claude_cli_runner(system: str, user: str, schema: dict, model: str) -> dict:
         "--no-session-persistence",
         "--setting-sources", "",
         "--system-prompt", system,
-        user,
     ]
+
+
+def claude_cli_runner(system: str, user: str, schema: dict, model: str) -> dict:
+    cmd = build_command(system, schema, model)
     try:
-        # 프로젝트 파일을 읽지 않도록 빈 임시 폴더에서 실행한다
+        # 프로젝트 파일을 읽지 않도록 빈 임시 폴더에서 실행한다. 본문은 표준 입력으로 보낸다.
         with tempfile.TemporaryDirectory() as tmp:
-            proc = subprocess.run(cmd, capture_output=True, text=True, timeout=LLM_TIMEOUT_SEC, cwd=tmp)
+            proc = subprocess.run(cmd, input=user, capture_output=True, text=True,
+                                  timeout=LLM_TIMEOUT_SEC, cwd=tmp)
     except FileNotFoundError as e:
         raise LLMError("claude CLI를 찾을 수 없다") from e
     except subprocess.TimeoutExpired as e:

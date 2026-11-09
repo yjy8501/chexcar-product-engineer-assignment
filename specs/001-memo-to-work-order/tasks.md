@@ -52,22 +52,22 @@ description: "검수 메모를 작업 오더 초안으로 바꾸기 작업 목�
 
 ### 시험을 먼저 쓴다 (구현 전에 실패하는 것을 확인한다)
 
-- [ ] T014 [P] [US1] `tests/test_validator.py`에 규칙별 시험을 쓴다: `test_v1_unknown_code_becomes_confirm`, `test_v2_missing_evidence_becomes_confirm`, `test_v3_weak_tone_becomes_confirm`, `test_v4_exchange_without_word_becomes_confirm`, `test_v5_tire_qty_over_2_becomes_confirm`, `test_v5_brake_front_rear_unknown_becomes_confirm`, `test_v6_duplicate_codes_merged`, `test_v7_unfit_overall_has_no_suggestion`, `test_v8_unlinked_sentence_warns`, `test_v9_lost_work_becomes_no_code`, `test_v10_null_code_with_alternatives_becomes_confirm`, `test_v11_panel_paint_needs_panel_word` (FR-002, FR-003, FR-004, FR-005, FR-007, FR-008, FR-009, FR-011, FR-013)
-- [ ] T015 [P] [US1] `tests/test_pipeline_failure.py`에 `test_failure_after_retry_lists_sentences_as_confirm`(두 번 실패하면 코드 제안 0개, 문장별 확인필요, overall 판단불가, meta.failure에 사유, attempts 2)와 `test_one_failure_then_success_is_normal`을 쓴다 (FR-022, FR-008)
-- [ ] T016 [P] [US1] `tests/test_contract.py`에 `test_drafts_match_schema`(가짜 LLM 출력으로 만든 초안이 `specs/001-memo-to-work-order/contracts/draft.schema.json`을 통과), `test_confirm_item_has_issue_and_recommendation`(확인필요 항목에 issue와 추천/대안이 채워짐), `test_excluded_item_has_reason`을 쓴다 (FR-001, FR-002, FR-006, FR-010)
-- [ ] T017 [P] [US1] `tests/test_knowledge.py`에 `test_glossary_entry_changes_prompt`(용어집에 약어를 추가하면 해석 프롬프트에 반영됨)를 쓴다 (FR-014)
+- [X] T014 [P] [US1] `tests/test_validator.py`에 규칙별 시험을 쓴다: `test_v1_unknown_code_becomes_confirm`, `test_v2_missing_evidence_becomes_confirm`, `test_v3_weak_tone_becomes_confirm`, `test_v4_exchange_without_word_becomes_confirm`, `test_v5_tire_qty_over_2_becomes_confirm`, `test_v5_brake_front_rear_unknown_becomes_confirm`, `test_v6_duplicate_codes_merged`, `test_v7_unfit_overall_has_no_suggestion`, `test_v8_unlinked_sentence_warns`, `test_v9_lost_work_becomes_no_code`, `test_v10_null_code_with_alternatives_becomes_confirm`, `test_v11_panel_paint_needs_panel_word` (FR-002, FR-003, FR-004, FR-005, FR-007, FR-008, FR-009, FR-011, FR-013)
+- [X] T015 [P] [US1] `tests/test_pipeline_failure.py`에 `test_failure_after_retry_lists_sentences_as_confirm`(두 번 실패하면 코드 제안 0개, 문장별 확인필요, overall 판단불가, meta.failure에 사유, attempts 2)와 `test_one_failure_then_success_is_normal`을 쓴다 (FR-022, FR-008)
+- [X] T016 [P] [US1] `tests/test_contract.py`에 `test_drafts_match_schema`(가짜 LLM 출력으로 만든 초안이 `specs/001-memo-to-work-order/contracts/draft.schema.json`을 통과), `test_confirm_item_has_issue_and_recommendation`(확인필요 항목에 issue와 추천/대안이 채워짐), `test_excluded_item_has_reason`을 쓴다 (FR-001, FR-002, FR-006, FR-010)
+- [X] T017 [P] [US1] `tests/test_knowledge.py`에 `test_glossary_entry_changes_prompt`(용어집에 약어를 추가하면 해석 프롬프트에 반영됨)를 쓴다 (FR-014)
 
 ### 구현
 
-- [ ] T018 [US1] `src/knowledge.py`를 만든다. `knowledge/<이름>/`의 세 파일을 읽는다 (FR-014; T017)
-- [ ] T019 [US1] `src/interpret.py`를 만든다. 시스템 프롬프트와 LLM 출력 스키마. 규칙: 하지 않는다는 문장은 제외 항목으로, 코드표에 없는 작업은 코드없음으로, 하나로 고를 수 없으면 확인필요로, 메모만으로 고를 수 없으면 판단불가로. 지식 문서의 내용을 프롬프트에 넣는다 (FR-005, FR-007, FR-008, FR-010, FR-014)
-- [ ] T020 [US1] `src/validator.py`를 만든다. research D2의 V1~V11 (T014를 통과시킨다) (FR-002~FR-005, FR-007~FR-009, FR-011, FR-013)
-- [ ] T021 [US1] `src/pipeline.py`를 만든다. 문장 나누기, LLM 호출, 검사, 문장 역할(반영, 제외, 애매, 연결없음) 계산, Draft 만들기. LLM 실패 시 FR-022 초안 (T015, T016을 통과시킨다) (FR-001, FR-002, FR-006, FR-022)
-- [ ] T022 [US1] `src/run.py`를 만든다. `python -m src.run --knowledge base|extended [--only ids]`가 10건을 실행해 `results/results_<이름>.json`(모델, 지식 이름, 초안 목록)에 저장한다 (FR-001, FR-002, FR-016)
-- [ ] T023 [US1] `src/app.py`에 읽기 전용 엔드포인트 `GET /`, `GET /api/knowledge`, `GET /api/results`를 만든다. contracts/api.md 형식을 따른다 (FR-016)
-- [ ] T024 [US1] `web/index.html`에 결과 화면을 만든다. 메모 10건 목록, 문장을 반영/제외/애매로 색 구분, 제안/확인필요/코드없음 구분 표, 제외 항목, 경고, 지식 문서 선택 (FR-017, FR-001)
-- [ ] T025 [US1] 실제 실행 검증: `python -m src.run --knowledge base`를 실행하고 `results/results_base.json`의 모든 코드가 코드표에 있는지 확인한 뒤 커밋한다. 상태별 개수를 기록한다 (FR-001, FR-002, FR-003)
-- [ ] T026 [US1] 수동 검증: `uvicorn src.app:app`을 띄우고 브라우저에서 10건의 문장 색 구분과 상태 표를 본다. 자동화하지 못하는 이유: 색 구분은 눈으로 보는 요구사항이다 (FR-017)
+- [X] T018 [US1] `src/knowledge.py`를 만든다. `knowledge/<이름>/`의 세 파일을 읽는다 (FR-014; T017)
+- [X] T019 [US1] `src/interpret.py`를 만든다. 시스템 프롬프트와 LLM 출력 스키마. 규칙: 하지 않는다는 문장은 제외 항목으로, 코드표에 없는 작업은 코드없음으로, 하나로 고를 수 없으면 확인필요로, 메모만으로 고를 수 없으면 판단불가로. 지식 문서의 내용을 프롬프트에 넣는다 (FR-005, FR-007, FR-008, FR-010, FR-014)
+- [X] T020 [US1] `src/validator.py`를 만든다. research D2의 V1~V11 (T014를 통과시킨다) (FR-002~FR-005, FR-007~FR-009, FR-011, FR-013)
+- [X] T021 [US1] `src/pipeline.py`를 만든다. 문장 나누기, LLM 호출, 검사, 문장 역할(반영, 제외, 애매, 연결없음) 계산, Draft 만들기. LLM 실패 시 FR-022 초안 (T015, T016을 통과시킨다) (FR-001, FR-002, FR-006, FR-022)
+- [X] T022 [US1] `src/run.py`를 만든다. `python -m src.run --knowledge base|extended [--only ids]`가 10건을 실행해 `results/results_<이름>.json`(모델, 지식 이름, 초안 목록)에 저장한다 (FR-001, FR-002, FR-016)
+- [X] T023 [US1] `src/app.py`에 읽기 전용 엔드포인트 `GET /`, `GET /api/knowledge`, `GET /api/results`를 만든다. contracts/api.md 형식을 따른다 (FR-016)
+- [X] T024 [US1] `web/index.html`에 결과 화면을 만든다. 메모 10건 목록, 문장을 반영/제외/애매로 색 구분, 제안/확인필요/코드없음 구분 표, 제외 항목, 경고, 지식 문서 선택 (FR-017, FR-001)
+- [X] T025 [US1] 실제 실행 검증: `python -m src.run --knowledge base`를 실행하고 `results/results_base.json`의 모든 코드가 코드표에 있는지 확인한 뒤 커밋한다. 상태별 개수를 기록한다 (FR-001, FR-002, FR-003)
+- [X] T026 [US1] 수동 검증: `uvicorn src.app:app`을 띄우고 브라우저에서 10건의 문장 색 구분과 상태 표를 본다. 자동화하지 못하는 이유: 색 구분은 눈으로 보는 요구사항이다 (FR-017)
 
 **Checkpoint**: 이 시점에 US1만으로 "메모를 넣으면 초안이 나온다"가 동작하고 단독으로 시험할 수 있다.
 
@@ -150,28 +150,28 @@ US3 시험: T032, T033, T034
 
 | 요구사항 | 구현 태스크 | 검증 태스크 | 검증 대상 | 상태 | 실행 근거 |
 |----------|-------------|-------------|-----------|------|-----------|
-| FR-001 | T008, T019, T021, T022, T024 | T016, T025 | tests/test_contract.py#test_drafts_match_schema, `python -m src.run --knowledge base` | 미검증 | |
-| FR-002 | T008, T020, T021 | T014, T016 | tests/test_validator.py#test_v7_unfit_overall_has_no_suggestion, test_contract.py#test_drafts_match_schema | 미검증 | |
-| FR-003 | T009, T020 | T004, T014, T025 | tests/test_catalog.py, test_validator.py#test_v1_unknown_code_becomes_confirm | 미검증 | |
-| FR-004 | T010, T020 | T005, T014 | tests/test_validator.py#test_v2_missing_evidence_becomes_confirm | 미검증 | |
-| FR-005 | T019, T020 | T014 | tests/test_validator.py#test_v3_weak_tone_becomes_confirm, test_v4_exchange_without_word_becomes_confirm, test_v11_panel_paint_needs_panel_word | 미검증 | |
-| FR-006 | T019, T021 | T016 | tests/test_contract.py#test_confirm_item_has_issue_and_recommendation | 미검증 | |
-| FR-007 | T019, T020 | T014 | tests/test_validator.py#test_v9_lost_work_becomes_no_code, test_v10_null_code_with_alternatives_becomes_confirm | 미검증 | |
-| FR-008 | T019, T020, T021 | T014, T015 | tests/test_validator.py#test_v7_unfit_overall_has_no_suggestion, test_pipeline_failure.py | 미검증 | |
-| FR-009 | T020 | T014 | tests/test_validator.py#test_v6_duplicate_codes_merged | 미검증 | |
-| FR-010 | T019, T021 | T016 | tests/test_contract.py#test_excluded_item_has_reason | 미검증 | |
-| FR-011 | T020 | T014 | tests/test_validator.py#test_v5_tire_qty_over_2_becomes_confirm, test_v5_brake_front_rear_unknown_becomes_confirm | 미검증 | |
+| FR-001 | T008, T019, T021, T022, T024 | T016, T025 | tests/test_contract.py#test_drafts_match_schema, `python -m src.run --knowledge base` | 통과 | pytest tests/test_contract.py (스키마 통과) 통과, `python -m src.run --knowledge base` 10건 저장 |
+| FR-002 | T008, T020, T021 | T014, T016 | tests/test_validator.py#test_v7_unfit_overall_has_no_suggestion, test_contract.py#test_drafts_match_schema | 통과 | pytest tests/test_validator.py, test_contract.py 통과 |
+| FR-003 | T009, T020 | T004, T014, T025 | tests/test_catalog.py, test_validator.py#test_v1_unknown_code_becomes_confirm | 통과 | pytest tests/test_catalog.py, test_validator.py 통과. 저장된 결과 10건의 코드가 모두 코드표에 있음(확인 스크립트 0건 위반) |
+| FR-004 | T010, T020 | T005, T014 | tests/test_validator.py#test_v2_missing_evidence_becomes_confirm | 통과 | pytest tests/test_sentences.py, test_validator.py(V2) 통과 |
+| FR-005 | T019, T020 | T014 | tests/test_validator.py#test_v3_weak_tone_becomes_confirm, test_v4_exchange_without_word_becomes_confirm, test_v11_panel_paint_needs_panel_word | 통과 | pytest tests/test_validator.py(V3, V4, V11) 통과. LLM 판단 부분은 SC-001 평가에서 확인(대기) |
+| FR-006 | T019, T021 | T016 | tests/test_contract.py#test_confirm_item_has_issue_and_recommendation | 통과 | pytest tests/test_contract.py#test_confirm_item_has_issue_and_recommendation 통과 |
+| FR-007 | T019, T020 | T014 | tests/test_validator.py#test_v9_lost_work_becomes_no_code, test_v10_null_code_with_alternatives_becomes_confirm | 통과 | pytest tests/test_validator.py(V9, V10) 통과 |
+| FR-008 | T019, T020, T021 | T014, T015 | tests/test_validator.py#test_v7_unfit_overall_has_no_suggestion, test_pipeline_failure.py | 통과 | pytest tests/test_validator.py(V7), test_pipeline_failure.py 통과 |
+| FR-009 | T020 | T014 | tests/test_validator.py#test_v6_duplicate_codes_merged | 통과 | pytest tests/test_validator.py#test_v6_* 통과 |
+| FR-010 | T019, T021 | T016 | tests/test_contract.py#test_excluded_item_has_reason | 통과 | pytest tests/test_contract.py#test_excluded_item_has_reason 통과 |
+| FR-011 | T020 | T014 | tests/test_validator.py#test_v5_tire_qty_over_2_becomes_confirm, test_v5_brake_front_rear_unknown_becomes_confirm | 통과 | pytest tests/test_validator.py(V5) 통과 |
 | FR-012 | T028, T029, T030 | T027, T031 | tests/test_orders.py (409, 422, 저장, 추천 없는 항목의 코드 선택, 코드없음이 승인을 막지 않음), 수동 절차 T031 | 미검증 | |
-| FR-013 | T010, T020 | T005, T014 | tests/test_validator.py#test_v8_unlinked_sentence_warns | 미검증 | |
-| FR-014 | T012, T013, T018, T038 | T017, T033, T040 | tests/test_knowledge.py#test_glossary_entry_changes_prompt, test_compare.py | 미검증 | |
+| FR-013 | T010, T020 | T005, T014 | tests/test_validator.py#test_v8_unlinked_sentence_warns | 통과 | pytest tests/test_sentences.py, test_validator.py(V8) 통과 |
+| FR-014 | T012, T013, T018, T038 | T017, T033, T040 | tests/test_knowledge.py#test_glossary_entry_changes_prompt, test_compare.py | 미검증 | 부분: T017 통과(pytest tests/test_knowledge.py). T033, T040 대기 |
 | FR-015 | T035, T037 | T032, T040 | tests/test_evaluate.py, `python -m src.evaluate` | 미검증 | |
 | FR-016 | T022, T023, T039 | T034, T041 | tests/test_report.py#test_report_embeds_results_and_has_no_external_requests, 수동 절차 T041 | 미검증 | |
-| FR-017 | T024, T039 | T026, T041 | 수동 절차 T026, T041 (색 구분은 눈으로 확인) | 미검증 | |
+| FR-017 | T024, T039 | T026, T041 | 수동 절차 T026, T041 (색 구분은 눈으로 확인) | 미검증 | 부분: T026 수동 확인 완료(2026-11-09, 브라우저 스크린샷으로 10건 목록, 문장 색 구분, 상태 표 확인). T041 대기 |
 | FR-018 | T043 | T042, T047 | 수동 점검표 T042(1), 사용자가 읽는 절차 T047 | 미검증 | |
 | FR-019 | T043 | T042 | 수동 점검표 T042(2) | 미검증 | |
 | FR-020 | T044 | T042, T047 | 수동 점검표 T042(5), quickstart 시나리오 9 | 미검증 | |
 | FR-021 | T043 | T042 | 수동 점검표 T042(4) | 미검증 | |
-| FR-022 | T006, T011, T021, T029 | T006, T015, T027 | tests/test_llm.py, tests/test_pipeline_failure.py#test_failure_after_retry_lists_sentences_as_confirm, test_orders.py#test_map_failure_returns_fallback_draft | 미검증 | |
+| FR-022 | T006, T011, T021, T029 | T006, T015, T027 | tests/test_llm.py, tests/test_pipeline_failure.py#test_failure_after_retry_lists_sentences_as_confirm, test_orders.py#test_map_failure_returns_fallback_draft | 미검증 | 부분: T006, T015 통과(pytest tests/test_llm.py, test_pipeline_failure.py). T027 대기 |
 | SC-001 | T037 | T032, T040 | `python -m src.evaluate` 종료 코드 0과 잘못 확정 0 | 미검증 | |
 | SC-002 | T035, T037 | T032, T040 | tests/test_evaluate.py#test_wrong_confirm_counted, `python -m src.evaluate` | 미검증 | |
 | SC-003 | T035, T037 | T032, T040 | tests/test_evaluate.py#test_overall_mismatch_counted, `python -m src.evaluate` | 미검증 | |

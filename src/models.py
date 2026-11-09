@@ -53,6 +53,7 @@ class Meta(BaseModel):
     knowledge: str
     attempts: int = Field(ge=1)
     failure: str | None = None
+    cost_usd: float | None = None  # 이 메모를 해석하는 데 든 비용(참고용)
 
 
 class Draft(BaseModel):

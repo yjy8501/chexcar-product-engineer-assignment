@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>검수 메모 오더 초안</title>
+<style>
+  :root {
+    --bg: #f6f7f9; --card: #fff; --text: #1d2330; --sub: #5c6577; --line: #e1e5ec;
+    --ok: #137a4a; --ok-bg: #e3f5ec; --warn: #9a5b00; --warn-bg: #fff2d6; --no: #8a2c2c; --no-bg: #fde7e7;
+    --gray: #6a7384; --gray-bg: #eceef3; --accent: #2457d6;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #12151b; --card: #1a1f28; --text: #e8ebf2; --sub: #9aa3b5; --line: #2a303c;
+      --ok: #62d79b; --ok-bg: #12301f; --warn: #f0b95a; --warn-bg: #3a2c10; --no: #f08a8a; --no-bg: #3b1b1b;
+      --gray: #a0a8b8; --gray-bg: #272c37; --accent: #7aa2ff;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.55 -apple-system, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif; }
+  header { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; padding: 14px 20px; background: var(--card); border-bottom: 1px solid var(--line); }
+  header h1 { font-size: 17px; margin: 0; }
+  header .meta { color: var(--sub); font-size: 13px; }
+  header select { font: inherit; padding: 4px 8px; border-radius: 6px; border: 1px solid var(--line); background: var(--card); color: var(--text); }
+  main { display: grid; grid-template-columns: 280px 1fr; gap: 16px; padding: 16px 20px; max-width: 1200px; margin: 0 auto; }
+  @media (max-width: 800px) { main { grid-template-columns: 1fr; padding: 12px 16px; } }
+  .list { display: flex; flex-direction: column; gap: 8px; }
+  .row { text-align: left; background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; cursor: pointer; color: inherit; font: inherit; }
+  .row[aria-current="true"] { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+  .row .id { font-weight: 600; }
+  .row .memo { color: var(--sub); font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .chips { display: flex; gap: 6px; margin-top: 6px; flex-wrap: wrap; }
+  .chip { font-size: 12px; padding: 1px 8px; border-radius: 999px; }
+  .c-ok { background: var(--ok-bg); color: var(--ok); } .c-warn { background: var(--warn-bg); color: var(--warn); }
+  .c-no { background: var(--no-bg); color: var(--no); } .c-gray { background: var(--gray-bg); color: var(--gray); }
+  section.card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; margin-bottom: 14px; }
+  section.card h2 { font-size: 15px; margin: 0 0 10px; }
+  .memo-text { line-height: 2; }
+  .s { padding: 2px 4px; border-radius: 4px; margin-right: 2px; }
+  .s.반영 { background: var(--ok-bg); color: var(--ok); } .s.제외 { background: var(--gray-bg); color: var(--gray); text-decoration: line-through; }
+  .s.애매 { background: var(--warn-bg); color: var(--warn); } .s.연결없음 { background: var(--no-bg); color: var(--no); outline: 1px dashed var(--no); }
+  .legend { color: var(--sub); font-size: 12px; margin-top: 8px; display: flex; gap: 10px; flex-wrap: wrap; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { color: var(--sub); font-weight: 500; font-size: 12px; }
+  .code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 13px; }
+  .confirm { border: 1px solid var(--warn); background: var(--warn-bg); border-radius: 10px; padding: 10px 12px; margin-bottom: 10px; }
+  .confirm .issue { font-weight: 600; color: var(--warn); }
+  .ev { color: var(--sub); font-size: 13px; margin: 2px 0 6px; }
+  .opt { display: flex; gap: 8px; align-items: baseline; padding: 3px 0; }
+  .muted { color: var(--sub); } .small { font-size: 13px; }
+  .banner { border-radius: 10px; padding: 10px 12px; margin-bottom: 14px; }
+  .banner.fail { background: var(--no-bg); color: var(--no); } .banner.info { background: var(--gray-bg); color: var(--text); }
+  button.primary { font: inherit; background: var(--accent); color: #fff; border: 0; border-radius: 8px; padding: 8px 16px; cursor: pointer; }
+  button.primary:disabled { opacity: .45; cursor: not-allowed; }
+  .done { background: var(--ok-bg); color: var(--ok); border-radius: 10px; padding: 10px 12px; }
+  .err { background: var(--no-bg); color: var(--no); border-radius: 10px; padding: 10px 12px; margin-top: 8px; }
+  ul.plain { margin: 0; padding-left: 18px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>검수 메모 오더 초안</h1>
+  <label class="meta">지식 문서 <select id="knowledge"></select></label>
+  <span class="meta" id="meta"></span>
+</header>
+<main>
+  <nav class="list" id="list" aria-label="검수 메모 목록"></nav>
+  <div id="detail"></div>
+</main>
+<script>
+const EMBEDDED = /*__EMBEDDED__*/null; // report.html을 만들 때 저장된 결과가 여기에 들어간다
+const STATIC = EMBEDDED !== null;
+let DATA = null, CURRENT = 0;
+
+// 안전한 DOM 만들기: 메모 본문 같은 입력은 textContent로만 넣는다
+function h(tag, attrs, ...kids) {
+  const el = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs || {})) {
+    if (k === 'class') el.className = v; else if (k.startsWith('on')) el.addEventListener(k.slice(2), v);
+    else if (v === true) el.setAttribute(k, ''); else if (v !== false && v != null) el.setAttribute(k, v);
+  }
+  for (const kid of kids.flat()) if (kid != null) el.append(kid.nodeType ? kid : document.createTextNode(String(kid)));
+  return el;
+}
+const $ = (id) => document.getElementById(id);
+const won = (n) => n == null ? '' : n.toLocaleString('ko-KR') + '원';
+const codeName = (c) => (DATA.catalog[c] ? DATA.catalog[c].name : '');
+const counts = (d) => { const c = {제안: 0, 확인필요: 0, 코드없음: 0}; d.items.forEach(i => c[i.status]++); return c; };
+
+async function loadResults(name) {
+  if (STATIC) { DATA = EMBEDDED[name] || Object.values(EMBEDDED)[0]; return; }
+  const r = await fetch('/api/results?knowledge=' + encodeURIComponent(name));
+  if (!r.ok) throw new Error((await r.json()).detail || r.statusText);
+  DATA = await r.json();
+}
+
+function renderList() {
+  const list = $('list'); list.replaceChildren();
+  DATA.results.forEach((d, i) => {
+    const c = counts(d);
+    list.append(h('button', {class: 'row', 'aria-current': i === CURRENT, onclick: () => { CURRENT = i; render(); }},
+      h('div', {class: 'id'}, d.inspection_id, ' ', h('span', {class: 'chip ' + (d.overall === '판단불가' ? 'c-no' : d.overall === '작업없음' ? 'c-gray' : 'c-ok')}, d.overall)),
+      h('div', {class: 'memo'}, d.memo),
+      h('div', {class: 'chips'},
+        h('span', {class: 'chip c-ok'}, '제안 ' + c.제안), h('span', {class: 'chip c-warn'}, '확인필요 ' + c.확인필요), h('span', {class: 'chip c-no'}, '코드없음 ' + c.코드없음))));
+  });
+}
+
+function evidenceText(d, ev) { return ev.map(i => d.sentences[i] ? '"' + d.sentences[i].text + '"' : '').join(' '); }
+
+function renderDetail() {
+  const d = DATA.results[CURRENT], box = $('detail'); box.replaceChildren();
+  if (d.meta.failure) {
+    box.append(h('div', {class: 'banner fail'}, h('b', {}, '해석에 실패했습니다. '), d.meta.failure,
+      ' (', d.meta.attempts, '번 시도) 코드는 제안하지 않았고, 모든 문장을 확인필요로 두었습니다.'));
+  }
+  // 메모 원문: 문장 역할을 색으로 구분
+  box.append(h('section', {class: 'card'}, h('h2', {}, '메모 원문'),
+    h('div', {class: 'memo-text'}, d.sentences.map(s => h('span', {class: 's ' + s.role, title: s.role}, s.text))),
+    h('div', {class: 'legend'}, h('span', {class: 's 반영'}, '반영'), h('span', {class: 's 제외'}, '제외'), h('span', {class: 's 애매'}, '애매(확인 필요)'), h('span', {class: 's 연결없음'}, '어느 항목에도 연결 안 됨'))));
+
+  const sug = d.items.filter(i => i.status === '제안'), conf = d.items.filter(i => i.status === '확인필요'), none = d.items.filter(i => i.status === '코드없음');
+  if (!d.items.length && !d.meta.failure) box.append(h('div', {class: 'banner info'}, d.overall === '작업없음' ? '해야 할 작업이 없는 메모입니다.' : '정리된 항목이 없습니다.'));
+
+  if (sug.length) box.append(h('section', {class: 'card'}, h('h2', {}, '제안 (한 번에 승인할 수 있음)'),
+    h('table', {}, h('thead', {}, h('tr', {}, ['코드', '이름', '수량', '금액', '근거 문장'].map(t => h('th', {}, t)))),
+      h('tbody', {}, sug.map(i => h('tr', {}, h('td', {class: 'code'}, i.code), h('td', {}, codeName(i.code)), h('td', {}, i.qty),
+        h('td', {}, won((DATA.catalog[i.code] || {}).price * i.qty || null)), h('td', {class: 'small muted'}, evidenceText(d, i.evidence))))))));
+
+  if (conf.length) box.append(h('section', {class: 'card'}, h('h2', {}, '확인필요 (관리자가 고릅니다)'), conf.map(i => confirmCard(d, i))));
+
+  if (none.length) box.append(h('section', {class: 'card'}, h('h2', {}, '코드없음 (표준 코드표에 맞는 코드가 없어 수동 처리가 필요합니다)'),
+    h('ul', {class: 'plain'}, none.map(i => h('li', {}, h('span', {class: 'small muted'}, evidenceText(d, i.evidence)), ' - ', i.issue)))));
+
+  if (d.excluded.length) box.append(h('section', {class: 'card'}, h('h2', {}, '하지 않기로 한 것'),
+    h('ul', {class: 'plain'}, d.excluded.map(e => h('li', {}, h('span', {class: 'small muted'}, evidenceText(d, e.evidence)), ' - ', e.reason)))));
+
+  if (d.warnings.length) box.append(h('section', {class: 'card'}, h('h2', {}, '경고'), h('ul', {class: 'plain'}, d.warnings.map(w => h('li', {}, w)))));
+
+  box.append(h('div', {id: 'approval'}));
+  renderApproval(d, box);
+  box.append(h('p', {class: 'muted small'}, '모델 ', d.meta.model, ' / 지식 문서 ', d.meta.knowledge, ' / 시도 ', d.meta.attempts, '번',
+    d.items.some(i => i.downgraded_by) ? ' / 프로그램 검사로 내려간 항목: ' + d.items.filter(i => i.downgraded_by).map(i => '#' + i.id + '(' + i.downgraded_by + ')').join(', ') : ''));
+}
+
+// 확인필요 카드 (승인 선택은 renderApproval 단계에서 라디오로 붙는다)
+function confirmCard(d, i) {
+  const opts = [];
+  if (i.recommended) opts.push({...i.recommended, rec: true});
+  i.alternatives.forEach(a => { if (!opts.some(o => o.code === a.code)) opts.push(a); });
+  return h('div', {class: 'confirm', 'data-item': i.id},
+    h('div', {class: 'issue'}, i.issue),
+    h('div', {class: 'ev'}, evidenceText(d, i.evidence)),
+    opts.map(o => h('div', {class: 'opt'}, selector(i, o.code), h('span', {class: 'code'}, o.code), ' ', codeName(o.code), ' ',
+      o.qty ? '수량 ' + o.qty : '', o.rec ? h('span', {class: 'chip c-ok'}, '추천') : '')),
+    !opts.length ? h('div', {class: 'muted small'}, '추천할 코드가 없습니다. 직접 고릅니다.') : null,
+    selectorExtra(i));
+}
+
+// 승인 단계에서 덮어쓰는 자리 (서버가 있을 때만 동작한다)
+function selector() { return h('span', {}); }
+function selectorExtra() { return null; }
+function renderApproval() {}
+
+async function render() { renderList(); renderDetail(); }
+
+async function init() {
+  const sel = $('knowledge');
+  const names = STATIC ? Object.keys(EMBEDDED) : (await (await fetch('/api/knowledge')).json()).names;
+  names.forEach(n => sel.append(h('option', {value: n}, n === 'base' ? 'base (문서에서 확인된 것만)' : n === 'extended' ? 'extended (가정 포함, 점수 제외)' : n)));
+  sel.addEventListener('change', async () => { CURRENT = 0; await loadResults(sel.value); renderMeta(); render(); });
+  await loadResults(sel.value || names[0]); renderMeta(); render();
+}
+function renderMeta() {
+  $('meta').textContent = `모델 ${DATA.model} / 실행 ${DATA.generated_at.slice(0, 16).replace('T', ' ')} / 메모 ${DATA.results.length}건` + (STATIC ? ' / 저장된 결과를 보는 중' : '');
+}
+init().catch(e => { $('detail').replaceChildren(h('div', {class: 'err'}, '결과를 불러오지 못했습니다: ' + e.message)); });
+</script>
+</body>
+</html>
