@@ -10,6 +10,18 @@
 2. `report.html`: 저장소를 내려받은 뒤(`git clone` 또는 ZIP) 브라우저로 열면 서버 없이 10건의 결과와 평가가 보입니다. GitHub 화면에서는 소스로만 보입니다.
 3. `docs/answer_key.md`: 정답표. 회사의 정답이 아니라 우리가 만든 해석입니다.
 
+## 평가 기준별로 보는 곳
+
+| 평가 기준 | 보는 곳 |
+|---|---|
+| 문제 쪼개기 | `docs/design.md` 1번 |
+| 선택과 포기 | `docs/design.md` 2번 |
+| 실패 설계 | `docs/design.md` 3번. 동작은 `src/validator.py`(프로그램 검사), `src/orders.py`(승인 규칙)와 `report.html` |
+| 측정 | `docs/design.md` 4번 |
+| 구현 | `report.html`, `tests/`(시험 91개), 아래 "실행 방법" |
+
+가정은 `docs/design.md` 5번, 현장에 물을 질문은 6번, 결과와 한계는 7번과 8번에 있습니다.
+
 ## 실행 방법
 
 Python 3.11 이상과 [uv](https://docs.astral.sh/uv/)가 필요합니다.
