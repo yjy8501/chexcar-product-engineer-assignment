@@ -19,7 +19,7 @@
     "inspection_id": "INS-003",
     "overall": "정상",
     "suggest": [],
-    "confirm": [["FD-FL-SP", "FD-FR-SP", "FD-RL-SP", "FD-RR-SP"], ["TY-00-EX"]],
+    "confirm": [["FD-FL-SP"], ["TY-00-EX"]],
     "no_code": 1,
     "forbidden": [{"code": "BT-12-EX", "max_qty": null}]
   },
