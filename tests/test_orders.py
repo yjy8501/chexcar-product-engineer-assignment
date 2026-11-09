@@ -140,3 +140,26 @@ def test_map_failure_returns_fallback_draft(client):
 
 def test_map_requires_inspection_id_or_memo(client):
     assert client.post("/api/map", json={"knowledge": "base"}).status_code == 422
+
+
+# ---- 보안 점검 반영: 확정 오더는 덮어쓰지 않고, 수량과 입력 길이에 상한을 둔다 ----
+def test_second_approval_is_rejected_and_keeps_the_first(client):
+    first = post(client, "INS-T3", [{"item_id": 2, "choice": "MR-00-EX"}])
+    assert first.status_code == 200
+    saved = (client.orders_dir / "INS-T3.json").read_text(encoding="utf-8")
+    second = post(client, "INS-T3", [{"item_id": 2, "choice": "skip"}])
+    assert second.status_code == 409
+    assert second.json()["detail"]["already_approved"] is True
+    assert (client.orders_dir / "INS-T3.json").read_text(encoding="utf-8") == saved
+
+
+def test_qty_upper_bound_rejected(client):
+    r = post(client, "INS-T4", [{"item_id": 1, "choice": "BP-FR-PT", "qty": 100}, {"item_id": 2, "choice": "skip"}])
+    assert r.status_code == 422
+    ok = post(client, "INS-T4", [{"item_id": 1, "choice": "BP-FR-PT", "qty": 99}, {"item_id": 2, "choice": "skip"}])
+    assert ok.status_code == 200 and ok.json()["lines"][0]["qty"] == 99
+
+
+def test_memo_length_limit(client):
+    r = client.post("/api/map", json={"memo": "가" * 2001, "knowledge": "base"})
+    assert r.status_code == 422

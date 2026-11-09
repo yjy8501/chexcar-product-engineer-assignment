@@ -6,8 +6,10 @@ from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field
 
 from . import config
+from .compare import compare
+from .evaluate import evaluate
 from .knowledge import available_knowledge, load_knowledge
-from .orders import ApprovalBlocked, ApprovalInvalid, build_order, load_orders, safe_id, save_order
+from .orders import MAX_QTY, ApprovalBlocked, ApprovalInvalid, OrderExists, build_order, load_orders, safe_id, save_order
 from .pipeline import map_memo
 
 app = FastAPI(title="검수 메모 오더 초안")
@@ -45,7 +47,7 @@ def results(knowledge: str = "base"):
 
 class MapRequest(BaseModel):
     inspection_id: str | None = None
-    memo: str | None = None
+    memo: str | None = Field(default=None, max_length=2000)  # 자유 입력은 길이를 제한한다
     knowledge: str = "base"
 
 
@@ -68,7 +70,7 @@ def map_one(req: MapRequest):
 class Selection(BaseModel):
     item_id: int
     choice: str  # 코드 또는 "skip"
-    qty: int | None = Field(default=None)
+    qty: int | None = Field(default=None, ge=1, le=MAX_QTY)
 
 
 class OrderRequest(BaseModel):
@@ -93,10 +95,31 @@ def approve(req: OrderRequest):
         raise HTTPException(409, {"message": str(e), "remaining": e.remaining})
     except ApprovalInvalid as e:
         raise HTTPException(422, str(e))
-    save_order(order, config.ORDERS)
+    try:
+        save_order(order, config.ORDERS)
+    except OrderExists as e:
+        raise HTTPException(409, {"message": str(e), "already_approved": True})
     return order.model_dump()
 
 
 @app.get("/api/orders")
 def orders():
     return {"orders": load_orders(config.ORDERS)}
+
+
+def summary() -> dict:
+    """정답표 평가와 기본/보강 비교. 저장된 결과와 정답표만 읽으므로 CLI가 필요 없다."""
+    out: dict = {}
+    base_path, ext_path = config.RESULTS / "results_base.json", config.RESULTS / "results_extended.json"
+    if base_path.exists() and config.ANSWER_KEY.exists():
+        out["evaluation"] = evaluate(json.loads(base_path.read_text(encoding="utf-8")),
+                                     json.loads(config.ANSWER_KEY.read_text(encoding="utf-8")))
+    if base_path.exists() and ext_path.exists():
+        out["compare"] = compare(json.loads(base_path.read_text(encoding="utf-8")),
+                                 json.loads(ext_path.read_text(encoding="utf-8")))
+    return out
+
+
+@app.get("/api/summary")
+def summary_endpoint():
+    return summary()

@@ -65,12 +65,14 @@
   <label class="meta">지식 문서 <select id="knowledge"></select></label>
   <span class="meta" id="meta"></span>
 </header>
+<div id="summary" style="max-width:1200px;margin:12px auto 0;padding:0 20px"></div>
 <main>
   <nav class="list" id="list" aria-label="검수 메모 목록"></nav>
   <div id="detail"></div>
 </main>
 <script>
 const EMBEDDED = /*__EMBEDDED__*/null; // report.html을 만들 때 저장된 결과가 여기에 들어간다
+const EXTRA = /*__EXTRA__*/null; // 평가와 비교 결과(report.html에서만 채워진다)
 const STATIC = EMBEDDED !== null;
 let DATA = null, CURRENT = 0;
 
@@ -218,7 +220,9 @@ async function approve(d) {
     body: JSON.stringify({inspection_id: d.inspection_id, knowledge: DATA.knowledge, selections: sel})});
   const body = await r.json();
   if (!r.ok) {
-    const msg = r.status === 409 ? '아직 확인필요가 남아 있습니다: #' + body.detail.remaining.join(', #') : (typeof body.detail === 'string' ? body.detail : JSON.stringify(body.detail));
+    const msg = r.status === 409 && body.detail.already_approved ? '이미 승인된 오더라 다시 저장할 수 없습니다.'
+      : r.status === 409 ? '아직 확인필요가 남아 있습니다: #' + (body.detail.remaining || []).join(', #')
+      : (typeof body.detail === 'string' ? body.detail : JSON.stringify(body.detail));
     $('approve-err').replaceChildren(h('div', {class: 'err'}, msg)); return;
   }
   ORDER[d.inspection_id] = body; render();
@@ -226,12 +230,43 @@ async function approve(d) {
 
 async function render() { renderList(); renderDetail(); }
 
+const METRIC_LABEL = {잘못_확정: '잘못 확정', 빠뜨린_제안: '빠뜨린 제안', 지나친_확인필요: '지나친 확인필요', 묻힌_쟁점: '묻힌 쟁점', 전체판정_불일치: '전체 판정 불일치', 코드없음_불일치: '코드없음 불일치'};
+function renderSummary(S) {
+  const box = $('summary'); box.replaceChildren();
+  const body = [];
+  const ev = S.evaluation;
+  if (ev && ev.scored) {
+    body.push(h('h2', {}, '정답표 평가 (기본 문서 결과)'));
+    body.push(h('p', {class: 'small muted'}, ev.note));
+    body.push(h('table', {}, h('thead', {}, h('tr', {}, Object.values(METRIC_LABEL).map(t => h('th', {}, t)))),
+      h('tbody', {}, h('tr', {}, Object.keys(METRIC_LABEL).map(k => h('td', {class: k === '잘못_확정' ? 'code' : ''}, ev.totals[k]))))));
+    const bad = ev.rows.filter(r => r.detail.length);
+    body.push(bad.length ? h('ul', {class: 'plain small'}, bad.map(r => h('li', {}, h('b', {}, r.inspection_id), ': ', r.detail.join(' / '))))
+                         : h('p', {class: 'small muted'}, '정답표와 다른 건이 없습니다.'));
+  }
+  const cp = S.compare;
+  if (cp) {
+    body.push(h('h2', {style: 'margin-top:14px'}, '문서를 보강하면 (가정 포함, 점수 제외)'));
+    const t = cp.totals, f = (c) => `제안 ${c.제안} / 확인필요 ${c.확인필요} / 코드없음 ${c.코드없음}`;
+    body.push(h('p', {class: 'small'}, '기본 문서: ', f(t.base), ' → 보강 문서: ', f(t.extended), ' (제안 ', (t.제안_증가 >= 0 ? '+' : '') + t.제안_증가, ')'));
+    body.push(h('p', {class: 'small muted'}, '달라진 건: ' + (cp.changed.join(', ') || '없음')));
+  }
+  if (!body.length) return;
+  box.append(h('details', {class: 'card', open: true, style: 'background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 16px'},
+    h('summary', {style: 'cursor:pointer;font-weight:600'}, '평가와 비교'), body));
+}
+async function loadSummary() {
+  let S = EXTRA;
+  if (!S) { try { const r = await fetch('/api/summary'); if (r.ok) S = await r.json(); } catch (e) { /* 요약은 없어도 된다 */ } }
+  if (S) renderSummary(S);
+}
+
 async function init() {
   const sel = $('knowledge');
   const names = STATIC ? Object.keys(EMBEDDED) : (await (await fetch('/api/knowledge')).json()).names;
   names.forEach(n => sel.append(h('option', {value: n}, n === 'base' ? 'base (문서에서 확인된 것만)' : n === 'extended' ? 'extended (가정 포함, 점수 제외)' : n)));
   sel.addEventListener('change', async () => { CURRENT = 0; await loadResults(sel.value); renderMeta(); render(); });
-  await loadResults(sel.value || names[0]); renderMeta(); render();
+  await loadResults(sel.value || names[0]); renderMeta(); render(); loadSummary();
 }
 function renderMeta() {
   $('meta').textContent = `모델 ${DATA.model} / 실행 ${DATA.generated_at.slice(0, 16).replace('T', ' ')} / 메모 ${DATA.results.length}건` + (STATIC ? ' / 저장된 결과를 보는 중' : '');

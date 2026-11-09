@@ -8,6 +8,7 @@ from .catalog import has_code, load_catalog
 from .models import ConfirmedOrder, OrderLine, Skipped
 
 _SAFE_ID = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_-]*$")
+MAX_QTY = 99
 
 
 class ApprovalBlocked(Exception):
@@ -16,6 +17,10 @@ class ApprovalBlocked(Exception):
     def __init__(self, remaining: list[int]):
         super().__init__("확인필요 항목이 남아 있다")
         self.remaining = remaining
+
+
+class OrderExists(Exception):
+    """이미 승인된 오더라 덮어쓸 수 없다 (409). 확정 오더는 한 번 저장되면 바뀌지 않는다."""
 
 
 class ApprovalInvalid(Exception):
@@ -42,8 +47,8 @@ def build_order(draft: dict, selections: list[dict], knowledge: str, catalog: di
         if choice != "skip" and not has_code(choice, catalog):  # 코드표를 다시 검사한다
             raise ApprovalInvalid(f"코드표에 없는 코드: {choice}")
         qty = s.get("qty")
-        if qty is not None and (not isinstance(qty, int) or qty < 1):
-            raise ApprovalInvalid(f"수량은 1 이상의 정수여야 한다: {qty}")
+        if qty is not None and (not isinstance(qty, int) or not 1 <= qty <= MAX_QTY):
+            raise ApprovalInvalid(f"수량은 1 이상 {MAX_QTY} 이하의 정수여야 한다: {qty}")
         chosen[iid] = s
 
     remaining = sorted(confirm_ids - set(chosen))
@@ -73,7 +78,11 @@ def save_order(order: ConfirmedOrder, orders_dir: Path) -> Path:
     orders_dir = Path(orders_dir)
     orders_dir.mkdir(parents=True, exist_ok=True)
     path = orders_dir / f"{safe_id(order.inspection_id)}.json"
-    path.write_text(order.model_dump_json(indent=2) + "\n", encoding="utf-8")
+    try:
+        with path.open("x", encoding="utf-8") as f:  # 이미 있으면 실패한다(덮어쓰기 금지)
+            f.write(order.model_dump_json(indent=2) + "\n")
+    except FileExistsError as e:
+        raise OrderExists(f"이미 승인된 오더: {order.inspection_id}") from e
     return path
 
 

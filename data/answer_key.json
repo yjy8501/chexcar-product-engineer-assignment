@@ -1,0 +1,82 @@
+[
+  {
+    "inspection_id": "INS-001",
+    "overall": "정상",
+    "suggest": [{"code": "HD-00-RM", "qty": 1}],
+    "confirm": [["FD-FR-SP", "BP-FR-PT"]],
+    "no_code": 0,
+    "forbidden": []
+  },
+  {
+    "inspection_id": "INS-002",
+    "overall": "작업없음",
+    "suggest": [],
+    "confirm": [],
+    "no_code": 0,
+    "forbidden": []
+  },
+  {
+    "inspection_id": "INS-003",
+    "overall": "정상",
+    "suggest": [],
+    "confirm": [["FD-FL-SP", "FD-FR-SP", "FD-RL-SP", "FD-RR-SP"], ["TY-00-EX"]],
+    "no_code": 1,
+    "forbidden": [{"code": "BT-12-EX", "max_qty": null}]
+  },
+  {
+    "inspection_id": "INS-004",
+    "overall": "정상",
+    "suggest": [],
+    "confirm": [["CL-00-PL"]],
+    "no_code": 0,
+    "forbidden": [{"code": "BP-RR-PT", "max_qty": null}]
+  },
+  {
+    "inspection_id": "INS-005",
+    "overall": "정상",
+    "suggest": [],
+    "confirm": [],
+    "no_code": 1,
+    "forbidden": []
+  },
+  {
+    "inspection_id": "INS-006",
+    "overall": "정상",
+    "suggest": [],
+    "confirm": [["TY-00-EX"], ["AL-00-SV"]],
+    "no_code": 0,
+    "forbidden": [{"code": "TY-00-EX", "max_qty": 2}]
+  },
+  {
+    "inspection_id": "INS-008",
+    "overall": "정상",
+    "suggest": [],
+    "confirm": [["DR-00-PDR", "DR-00-SP"], ["MR-00-EX", "MR-00-PT"], ["GL-FR-EX"]],
+    "no_code": 0,
+    "forbidden": []
+  },
+  {
+    "inspection_id": "INS-010",
+    "overall": "정상",
+    "suggest": [{"code": "BP-FR-PT", "qty": 1}],
+    "confirm": [["BR-00-EX"]],
+    "no_code": 0,
+    "forbidden": []
+  },
+  {
+    "inspection_id": "INS-019",
+    "overall": "판단불가",
+    "suggest": [],
+    "confirm": [],
+    "no_code": 0,
+    "forbidden": []
+  },
+  {
+    "inspection_id": "INS-020",
+    "overall": "정상",
+    "suggest": [{"code": "HD-00-SP", "qty": 1}, {"code": "BP-FR-PT", "qty": 1}, {"code": "HL-00-RM", "qty": 1}],
+    "confirm": [["CL-00-PL"]],
+    "no_code": 0,
+    "forbidden": [{"code": "GL-FR-EX", "max_qty": null}]
+  }
+]
