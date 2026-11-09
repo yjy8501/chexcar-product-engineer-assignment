@@ -98,7 +98,7 @@ description: "검수 메모를 작업 오더 초안으로 바꾸기 작업 목�
 - [X] T032 [P] [US3] `tests/test_evaluate.py`에 `test_wrong_confirm_counted`(금지 코드 또는 max_qty 초과가 제안에 있으면 센다), `test_missing_suggestion_counted`, `test_over_confirm_counted`, `test_overall_mismatch_counted`, `test_exit_code_nonzero_when_wrong_confirm`을 쓴다 (FR-015, SC-001, SC-002, SC-003)
 - [X] T033 [P] [US3] `tests/test_compare.py`에 `test_compare_counts_per_status`(기본/보강 결과의 제안, 확인필요, 코드없음 개수와 달라진 건), `test_per_inspection_counts_reported`를 쓴다 (FR-014, SC-004, SC-005)
 - [X] T034 [P] [US3] `tests/test_report.py`에 `test_report_embeds_results_and_has_no_external_requests`(결과가 들어 있고 외부 주소 요청이 없다), `test_report_has_all_inspections`를 쓴다 (FR-016, SC-006)
-- [X] T035 [US3] `data/answer_key.json`을 만든다. data-model.md의 AnswerKeyEntry 형식(overall, suggest, confirm 묶음, no_code, forbidden)으로 10건. 이전 시도의 정답표 초안(저장소 밖 보관본)을 참고하되, 항목마다 근거를 다시 확인한다. 사람이 읽는 표 `docs/answer_key.md`도 같이 쓴다 (FR-015, SC-002, SC-003)
+- [X] T035 [US3] `data/answer_key.json`을 만든다. data-model.md의 AnswerKeyEntry 형식(overall, suggest, confirm 묶음, no_code, forbidden)으로 10건. 항목마다 메모와 코드표를 다시 읽고 근거를 확인한다. 사람이 읽는 표 `docs/answer_key.md`도 같이 쓴다 (FR-015, SC-002, SC-003)
 - [X] T036 [US3] 사용자 확인: 정답표 초안을 사용자에게 보여주고 승인받는다. 확인 전에는 평가 결과를 "회사의 정답"으로 쓰지 않는다 (research Q9의 남은 미확인, spec Assumptions 3번)
 - [X] T037 [US3] `src/evaluate.py`를 만든다. 지표는 잘못 확정, 빠뜨린 제안, 지나친 확인필요, 묻힌 쟁점, 전체 판정 불일치. 기본본만 점수로 계산하고 보강본은 비교용으로만 표시한다. 잘못 확정이 1건이라도 있으면 종료 코드 1 (FR-015, SC-001~SC-003; T032)
 - [X] T038 [US3] `src/compare.py`를 만든다. 기본본과 보강본의 개수 비교와 달라진 건 (FR-014, SC-004, SC-005; T033)
